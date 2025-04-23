@@ -1,4 +1,7 @@
 try {
+  // Initialisation du SDK Pi — obligatoire
+  window.Pi.init({ version: "2.0", sandbox: true }); // "sandbox: true" = testnet
+
   const payment = await window.Pi.createPayment({
     amount: 0.001,
     memo: "Paiement test Pi",
@@ -25,7 +28,9 @@ try {
     alert('Paiement validé !');
   } else {
     alert('Erreur serveur : ' + result.error);
-  catch (error) {
+  }
+
+} catch (error) {
   console.error('Erreur durant le paiement:', error);
   alert('Erreur pendant le paiement : ' + (error?.message || error));
 }
