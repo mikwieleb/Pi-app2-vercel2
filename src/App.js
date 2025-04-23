@@ -1,4 +1,5 @@
 import React from "react";
+import "./App.css";
 import PiPaymentButton from "./PiPaymentButton";
 import "./App.css";
 
