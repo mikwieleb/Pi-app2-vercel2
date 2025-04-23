@@ -1,0 +1,31 @@
+.app-container {
+  background-color: #f6f0e8;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: sans-serif;
+  padding: 20px;
+}
+
+.app-logo {
+  width: 100px;
+  margin-bottom: 20px;
+}
+
+.app-title {
+  font-size: 2em;
+  margin-bottom: 20px;
+}
+
+.open-button {
+  background-color: #8b4dff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  font-size: 1em;
+  cursor: pointer;
+}
