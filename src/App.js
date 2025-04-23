@@ -1,18 +1,16 @@
-import React, { useEffect } from "react";
-import PiPaymentButton from "./PiPaymentButton";
+// src/App.js
+import React, { useEffect } from 'react';
+import { loadPiSDK } from './utils/pi-sdk';
+import PiPaymentButton from './PiPaymentButton';
 
 function App() {
   useEffect(() => {
-    if (window.Pi) {
-      window.Pi.init({
-        version: "2.0",
-        sandbox: true
-      });
-    }
+    // Charger le SDK Pi à l'initialisation du composant
+    loadPiSDK();
   }, []);
 
   return (
-    <div style={{ textAlign: "center", marginTop: "100px" }}>
+    <div className="App">
       <h1>Test Paiement Pi</h1>
       <PiPaymentButton />
     </div>
