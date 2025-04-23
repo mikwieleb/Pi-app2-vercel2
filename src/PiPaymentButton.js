@@ -25,8 +25,7 @@ try {
     alert('Paiement validé !');
   } else {
     alert('Erreur serveur : ' + result.error);
-  }
-} catch (error) {
+  catch (error) {
   console.error('Erreur durant le paiement:', error);
-  alert('Erreur pendant le paiement.');
+  alert('Erreur pendant le paiement : ' + (error?.message || error));
 }
