@@ -1,4 +1,3 @@
-// src/PiPaymentButton.js
 import React from 'react';
 
 const PiPaymentButton = () => {
@@ -19,7 +18,6 @@ const PiPaymentButton = () => {
         memo: "Paiement test Pi",
         metadata: { type: "test-payment" },
 
-        // ✅ Callback quand le paiement est prêt à être validé côté serveur
         onReadyForServerApproval: async function (paymentId) {
           try {
             const res = await fetch('/api/verify-payment', {
@@ -27,33 +25,30 @@ const PiPaymentButton = () => {
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ paymentId })
             });
+
             const result = await res.json();
+            console.log("Réponse du backend :", result);
 
             if (!res.ok) {
-              alert('Erreur serveur : ' + result.error || 'Erreur inconnue');
+              alert('Erreur serveur : ' + (result.error || 'Erreur inconnue'));
             }
           } catch (err) {
-            alert('Erreur réseau lors de la vérification du paiement.');
+            alert('Erreur réseau : ' + err.message);
           }
         },
 
-        // ✅ Callback une fois que Pi confirme le paiement
         onReadyForServerCompletion: function (paymentId, txid) {
           console.log('Paiement confirmé :', paymentId, txid);
           alert('Paiement validé avec succès !');
         },
 
-        // ✅ Si l’utilisateur annule
         onCancel: function (paymentId) {
           alert('Paiement annulé.');
         },
 
-        // ✅ Si une erreur survient
         onError: function (error, payment) {
           console.error("Erreur pendant le paiement :", error);
-          if (payment) {
-            console.log("Détails du paiement :", payment);
-          }
+          console.log("Paiement :", payment);
           alert("Erreur : " + (error?.message || "inconnue"));
         }
       });
