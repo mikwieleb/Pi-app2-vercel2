@@ -12,6 +12,7 @@ export default async function handler(req, res) {
 
     console.log("Paiement reçu côté serveur :", paymentId);
 
+    // Pour testnet, on retourne succès sans vérification réelle
     return res.status(200).json({ success: true });
   } catch (error) {
     console.error("Erreur dans verify-payment:", error);
