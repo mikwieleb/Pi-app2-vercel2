@@ -1,8 +1,8 @@
 {
-  "rewrites": [
+  "routes": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api/verify-payment.js"
+      "src": "/api/verify-payment",
+      "dest": "/api/verify-payment.js"
     }
   ]
 }
