@@ -10,7 +10,7 @@ function App() {
         alt="Pi Logo"
         style={styles.logo}
       />
-      <h1 style={styles.title}>Test Paiement Pi</h1>
+      <h1 style={styles.title}>Bienvenue sur l'application Pi !</h1>
       <PiPaymentButton />
       <button style={styles.openButton} onClick={() => window.location.href = 'pi://pi-app-browser'}>
         Ouvrir l'application
@@ -23,19 +23,23 @@ const styles = {
   container: {
     backgroundColor: '#f6f0ff',
     minHeight: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
     padding: '2rem',
-    textAlign: 'center',
   },
   logo: {
-    width: 100,
+    width: 80,
     marginBottom: '1rem',
   },
   title: {
-    fontSize: '2rem',
+    fontSize: '1.8rem',
     marginBottom: '2rem',
+    color: '#3c1c78',
   },
   openButton: {
-    marginTop: '1rem',
+    marginTop: '1.5rem',
     padding: '1rem 2rem',
     fontSize: '1rem',
     backgroundColor: '#ffcc80',
