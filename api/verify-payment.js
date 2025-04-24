@@ -10,8 +10,12 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "paymentId manquant" });
   }
 
-  // Ta clé secrète Pi, injectée depuis Vercel
+  // Récupération de la clé secrète Pi injectée par Vercel
   const secret = process.env.PI_API_SECRET;
+
+  // ← Ajoute ce log ici
+  console.log("🔥 PI_API_SECRET =", secret ? secret.slice(0, 6) + "…" : secret);
+
   if (!secret) {
     console.error("🛑 PI_API_SECRET non défini");
     return res.status(500).json({ error: "Clé secrète non configurée" });
