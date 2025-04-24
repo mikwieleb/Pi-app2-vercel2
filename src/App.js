@@ -11,9 +11,22 @@ function App() {
       .then(() => setPiReady(true))
       .catch((err) => {
         console.error("Erreur init Pi SDK :", err);
-        setError(err.message || "Erreur Pi SDK");
+        setError(err.message || JSON.stringify(err));
       });
   }, []);
+
+  const handleOpenApp = async () => {
+    try {
+      console.log("🔄 openApp appelé");
+      await window.Pi.openApp();
+      console.log("✅ openApp réussi");
+      alert("App ouverte (vérifie dans Pi Browser)");
+    } catch (err) {
+      console.error("❌ Erreur openApp", err);
+      const msg = err?.message || JSON.stringify(err);
+      alert("Erreur openApp : " + msg);
+    }
+  };
 
   if (error) {
     return (
@@ -43,8 +56,9 @@ function App() {
       }}
     >
       <h1>Test Paiement Pi</h1>
+
       <button
-        onClick={() => window.Pi.openApp()}
+        onClick={handleOpenApp}
         style={{
           margin: "16px 0",
           padding: "12px 24px",
@@ -58,6 +72,7 @@ function App() {
       >
         Ouvrir l’application
       </button>
+
       <PiPaymentButton />
     </div>
   );
