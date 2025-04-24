@@ -1,11 +1,12 @@
 // src/pi-sdk.js
-export const initPiNetwork = () => {
-  if (window.Pi) {
-    window.Pi.init({
-      version: "2.0",
-      sandbox: true
-    });
-  } else {
-    console.error("Pi Network SDK not found.");
-  }
-};
+
+// Vérifie que Pi est bien défini (SDK chargé)
+if (window.Pi) {
+  window.Pi.init({
+    version: "2.0",
+    sandbox: true, // Mets à false pour la version mainnet
+  });
+  console.log("Pi SDK initialisé.");
+} else {
+  console.error("Pi SDK non chargé !");
+}
