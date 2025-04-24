@@ -5,10 +5,14 @@ import PiPaymentButton from "./PiPaymentButton";
 function App() {
   const [piReady, setPiReady] = useState(false);
   const [error, setError] = useState(null);
+  const [authInfo, setAuthInfo] = useState(null);
 
   useEffect(() => {
     initPiSDK()
-      .then(() => setPiReady(true))
+      .then((res) => {
+        setAuthInfo(res);
+        setPiReady(true);
+      })
       .catch((err) => {
         console.error("Erreur init Pi SDK :", err);
         setError(err.message || JSON.stringify(err));
@@ -17,14 +21,13 @@ function App() {
 
   const handleOpenApp = async () => {
     try {
-      console.log("🔄 openApp appelé");
+      console.log("🔄 openApp appelé — window.Pi.openApp =", window.Pi.openApp);
       await window.Pi.openApp();
       console.log("✅ openApp réussi");
       alert("App ouverte (vérifie dans Pi Browser)");
     } catch (err) {
       console.error("❌ Erreur openApp", err);
-      const msg = err?.message || JSON.stringify(err);
-      alert("Erreur openApp : " + msg);
+      alert("Erreur openApp : " + JSON.stringify(err, Object.getOwnPropertyNames(err)));
     }
   };
 
@@ -56,6 +59,11 @@ function App() {
       }}
     >
       <h1>Test Paiement Pi</h1>
+
+      <p>
+        🔑 Connecté en tant que :{" "}
+        <code>{authInfo.publicAddress}</code>
+      </p>
 
       <button
         onClick={handleOpenApp}
