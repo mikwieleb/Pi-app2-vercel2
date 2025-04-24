@@ -1,7 +1,24 @@
-export function authenticateWithPi() {
+function waitForPiSDK() {
   return new Promise((resolve, reject) => {
-    if (window.Pi) {
-      const scopes = ["username", "wallet"];
+    const checkInterval = setInterval(() => {
+      if (window.Pi && window.Pi.authenticate) {
+        clearInterval(checkInterval);
+        resolve();
+      }
+    }, 100);
+    setTimeout(() => {
+      clearInterval(checkInterval);
+      reject("Pi SDK non chargé à temps");
+    }, 5000); // max 5 secondes
+  });
+}
+
+export async function authenticateWithPi() {
+  try {
+    await waitForPiSDK();
+
+    const scopes = ["username", "wallet"];
+    return new Promise((resolve, reject) => {
       window.Pi.authenticate(scopes, (authData) => {
         if (authData && authData.username) {
           resolve(authData);
@@ -9,8 +26,8 @@ export function authenticateWithPi() {
           reject("Authentification échouée");
         }
       });
-    } else {
-      reject("Pi SDK non initialisé");
-    }
-  });
+    });
+  } catch (err) {
+    throw new Error("Erreur SDK : " + err);
+  }
 }
