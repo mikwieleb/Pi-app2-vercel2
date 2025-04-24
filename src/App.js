@@ -1,36 +1,32 @@
 import React, { useEffect, useState } from "react";
-import { authenticateWithPi } from "./pi-sdk";
-import PiPaymentButton from "./PiPaymentButton";
-import "./App.css";
-import logo from "./logo.png";
+import { authenticateWithPi } from './utils/pi-sdk';
 
 function App() {
-  const [user, setUser] = useState(null);
+  const [authStatus, setAuthStatus] = useState(null);
 
   useEffect(() => {
-    authenticateWithPi()
-      .then((userData) => {
-        setUser(userData);
-      })
-      .catch((err) => {
-        console.error("Erreur d'authentification Pi :", err);
-      });
+    const authenticate = async () => {
+      try {
+        const auth = await authenticateWithPi();
+        setAuthStatus(auth.user.username);
+      } catch (error) {
+        setAuthStatus("Erreur d'authentification");
+      }
+    };
+    
+    authenticate();
   }, []);
 
   return (
     <div className="App">
-      <img src={logo} alt="Logo" className="logo" />
       <h1>Vente Automobile Pi</h1>
-
-      {!user ? (
-        <p>Connexion à Pi Network en cours...</p>
+      {authStatus ? (
+        <p>Bienvenue, {authStatus}</p>
       ) : (
-        <>
-          <p>Bienvenue, {user.username} !</p>
-          <PiPaymentButton />
-          <a href="pi://com.pi.app" className="open-app-button">Ouvrir l'application</a>
-        </>
+        <p>Authentification en cours...</p>
       )}
+      <button onClick={() => alert("Ouvrir l'application")}>Ouvrir l'application</button>
+      <button onClick={() => alert("Payer 0,001 Pi")}>Payer 0.001 Pi</button>
     </div>
   );
 }
