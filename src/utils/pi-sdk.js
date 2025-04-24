@@ -1,22 +1,43 @@
 // src/utils/pi-sdk.js
-export const loadPiSDK = () => {
-  // Vérifie si le SDK est déjà chargé
-  if (typeof window.Pi !== 'undefined') {
-    console.log('SDK Pi déjà chargé');
-    return window.Pi;
+
+/**
+ * Charge dynamiquement le SDK Pi si nécessaire,
+ * authentifie l’utilisateur, puis initialise le SDK (testnet).
+ */
+export async function initPiSDK() {
+  // 1️⃣ Charger le script Pi SDK si non présent
+  if (typeof window.Pi === "undefined") {
+    await new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = "https://cdn.pi.network/sdk/v2.js";
+      script.async = true;
+      script.onload = () => {
+        console.log("✅ SDK Pi chargé dynamiquement");
+        resolve();
+      };
+      script.onerror = () => {
+        console.error("❌ Échec du chargement du SDK Pi");
+        reject(new Error("Chargement du SDK Pi échoué"));
+      };
+      document.head.appendChild(script);
+    });
+  } else {
+    console.log("ℹ️ SDK Pi déjà présent");
   }
 
-  // Charge le script Pi SDK si nécessaire
-  const script = document.createElement('script');
-  script.src = 'https://cdn.pi.network/sdk/v2.js';  // URL du SDK Pi
-  script.async = true;
-  script.onload = () => {
-    console.log('SDK Pi chargé avec succès');
-  };
-  script.onerror = () => {
-    console.error('Erreur de chargement du SDK Pi');
-  };
-  document.head.appendChild(script);
-};
+  // 2️⃣ Authentifier l’utilisateur dans Pi Browser
+  try {
+    await window.Pi.authenticate({ appName: "AutomobilePiDemo" });
+    console.log("✅ Pi Browser authentifié");
+  } catch (err) {
+    console.error("❌ Échec de l’authentification Pi :", err);
+    throw new Error("Authentification Pi échouée : " + err.message);
+  }
 
-// Appelle cette fonction lorsque tu veux t'assurer que le SDK est chargé
+  // 3️⃣ Initialiser le SDK (version + sandbox)
+  window.Pi.init({
+    version: "2.0",
+    sandbox: true, // TESTNET
+  });
+  console.log("✅ SDK Pi initialisé (testnet)");
+}
