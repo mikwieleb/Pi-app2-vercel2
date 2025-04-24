@@ -3,7 +3,7 @@ import React from "react";
 const PiPaymentButton = () => {
   const handlePayment = async () => {
     try {
-      console.log("🚀 Création du paiement…");
+      console.log("🚀 Création du paiement… window.Pi =", window.Pi);
       await window.Pi.createPayment(
         {
           amount: 0.001,
@@ -27,8 +27,8 @@ const PiPaymentButton = () => {
               return true;
             } catch (e) {
               console.error("❌ Erreur lors de l’approbation serveur :", e);
-              alert("Erreur server approval: " + (e.message || JSON.stringify(e)));
-              return false; // stop flow si erreur
+              alert("Erreur server approval: " + JSON.stringify(e, Object.getOwnPropertyNames(e)));
+              return false;
             }
           },
           onReadyForServerCompletion: (paymentId, txid) => {
@@ -39,17 +39,18 @@ const PiPaymentButton = () => {
             console.log("⛔ Paiement annulé", paymentId);
             alert("Paiement annulé");
           },
-          onError: (error) => {
-            console.error("❌ Erreur de paiement", error);
-            const msg = error?.message || JSON.stringify(error);
-            alert("Erreur pendant le paiement : " + msg);
+          onError: (error, payment) => {
+            console.error("❌ Erreur de paiement", error, payment);
+            alert(
+              "Erreur pendant le paiement : " +
+                JSON.stringify(error, Object.getOwnPropertyNames(error))
+            );
           },
         }
       );
     } catch (err) {
       console.error("💥 Exception globale createPayment :", err);
-      const msg = err?.message || JSON.stringify(err);
-      alert("Exception paiement : " + msg);
+      alert("Exception paiement : " + JSON.stringify(err, Object.getOwnPropertyNames(err)));
     }
   };
 
