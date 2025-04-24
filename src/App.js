@@ -1,62 +1,66 @@
-import React from "react";
-import "./App.css";
+import React, { useEffect, useState } from "react";
+import { initPiSDK } from "./utils/pi-sdk";
+import PiPaymentButton from "./PiPaymentButton";
 
-const App = () => {
-  const handleOpenApp = () => {
-    if (window.Pi) {
-      window.Pi.openApp();
-    } else {
-      alert("Pi SDK non disponible");
-    }
-  };
+function App() {
+  const [piReady, setPiReady] = useState(false);
+  const [error, setError] = useState(null);
 
-  const handlePayment = async () => {
-    try {
-      const paymentData = {
-        amount: 0.001,
-        memo: "Paiement test",
-        metadata: { type: "test" },
-      };
-
-      const payment = await window.Pi.createPayment(paymentData, {
-        onReadyForServerApproval: async (paymentId) => {
-          await fetch("/api/verify-payment", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ paymentId }),
-          });
-        },
-        onReadyForServerCompletion: () => {
-          alert("Paiement effectué avec succès !");
-        },
-        onCancel: () => {
-          alert("Paiement annulé");
-        },
-        onError: (error) => {
-          console.error("Erreur lors du paiement :", error);
-          alert("Erreur pendant le paiement.");
-        },
+  useEffect(() => {
+    initPiSDK()
+      .then(() => setPiReady(true))
+      .catch((err) => {
+        console.error("Erreur init Pi SDK :", err);
+        setError(err.message || "Erreur Pi SDK");
       });
+  }, []);
 
-      console.log("Paiement lancé :", payment);
-    } catch (err) {
-      console.error("Erreur globale du paiement :", err);
-      alert("Erreur pendant le paiement.");
-    }
-  };
+  if (error) {
+    return (
+      <div style={{ padding: "20px", color: "red", textAlign: "center" }}>
+        🚨 Erreur d’initialisation Pi : {error}
+      </div>
+    );
+  }
+
+  if (!piReady) {
+    return (
+      <div style={{ padding: "20px", textAlign: "center" }}>
+        ⌛ Authentification Pi en cours…
+      </div>
+    );
+  }
 
   return (
-    <div className="app-container">
-      <img src="/logo.png" alt="Pi Logo" className="app-logo" />
-      <h1 className="app-title">Test Paiement Pi</h1>
-      <button className="open-button" onClick={handleOpenApp}>
-        Ouvrir l'application
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        padding: "40px",
+        background: "#f8f0ea",
+        minHeight: "100vh",
+      }}
+    >
+      <h1>Test Paiement Pi</h1>
+      <button
+        onClick={() => window.Pi.openApp()}
+        style={{
+          margin: "16px 0",
+          padding: "12px 24px",
+          background: "#a259ff",
+          color: "#fff",
+          border: "none",
+          borderRadius: "8px",
+          fontSize: "16px",
+          cursor: "pointer",
+        }}
+      >
+        Ouvrir l’application
       </button>
-      <button className="open-button" onClick={handlePayment}>
-        Payer 0.001 Pi (test)
-      </button>
+      <PiPaymentButton />
     </div>
   );
-};
+}
 
 export default App;
