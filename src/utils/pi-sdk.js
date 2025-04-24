@@ -1,8 +1,8 @@
 export const authenticateWithPi = async () => {
   return new Promise((resolve, reject) => {
-    const check = setInterval(() => {
+    const checkInterval = setInterval(() => {
       if (window.Pi && window.Pi.authenticate) {
-        clearInterval(check);
+        clearInterval(checkInterval);
         try {
           window.Pi.init({ version: "2.0", sandbox: true });
           const scopes = ["username", "payments"];
@@ -10,14 +10,15 @@ export const authenticateWithPi = async () => {
             if (auth && auth.user) resolve(auth);
             else reject("Authentification échouée");
           });
-        } catch (e) {
-          reject("Erreur init Pi : " + e);
+        } catch (error) {
+          reject("Erreur lors de Pi.init : " + error.message);
         }
       }
     }, 100);
+
     setTimeout(() => {
-      clearInterval(check);
-      reject("SDK Pi non chargé");
+      clearInterval(checkInterval);
+      reject("Chargement du SDK Pi trop long ou échoué.");
     }, 5000);
   });
 };
