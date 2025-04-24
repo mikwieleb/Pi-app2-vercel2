@@ -1,36 +1,23 @@
-function waitForPiInit() {
+export const authenticateWithPi = async () => {
   return new Promise((resolve, reject) => {
-    const start = Date.now();
-    const interval = setInterval(() => {
+    const check = setInterval(() => {
       if (window.Pi && window.Pi.authenticate) {
+        clearInterval(check);
         try {
           window.Pi.init({ version: "2.0", sandbox: true });
-          clearInterval(interval);
-          resolve();
+          const scopes = ["username", "payments"];
+          window.Pi.authenticate(scopes, (auth) => {
+            if (auth && auth.user) resolve(auth);
+            else reject("Authentification échouée");
+          });
         } catch (e) {
-          clearInterval(interval);
-          reject("Erreur pendant Pi.init : " + e);
+          reject("Erreur init Pi : " + e);
         }
       }
-      if (Date.now() - start > 5000) {
-        clearInterval(interval);
-        reject("Pi SDK non initialisé dans les temps.");
-      }
     }, 100);
+    setTimeout(() => {
+      clearInterval(check);
+      reject("SDK Pi non chargé");
+    }, 5000);
   });
-}
-
-export async function authenticateWithPi() {
-  await waitForPiInit();
-
-  return new Promise((resolve, reject) => {
-    const scopes = ["username", "wallet"];
-    window.Pi.authenticate(scopes, (authData) => {
-      if (authData && authData.username) {
-        resolve(authData);
-      } else {
-        reject("Authentification échouée");
-      }
-    });
-  });
-}
+};
