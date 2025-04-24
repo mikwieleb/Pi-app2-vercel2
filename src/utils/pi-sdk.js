@@ -3,6 +3,7 @@
 /**
  * Charge dynamiquement le SDK Pi si nécessaire,
  * authentifie l’utilisateur, puis initialise le SDK (testnet).
+ * Retourne l’objet d’authentification contenant publicAddress.
  */
 export async function initPiSDK() {
   // 1️⃣ Charger le script Pi SDK si non présent
@@ -26,9 +27,10 @@ export async function initPiSDK() {
   }
 
   // 2️⃣ Authentifier l’utilisateur dans Pi Browser
+  let authRes;
   try {
-    await window.Pi.authenticate({ appName: "AutomobilePiDemo" });
-    console.log("✅ Pi Browser authentifié");
+    authRes = await window.Pi.authenticate({ appName: "AutomobilePiDemo" });
+    console.log("✅ Pi Browser authentifié", authRes);
   } catch (err) {
     console.error("❌ Échec de l’authentification Pi :", err);
     throw new Error("Authentification Pi échouée : " + err.message);
@@ -40,4 +42,6 @@ export async function initPiSDK() {
     sandbox: true, // TESTNET
   });
   console.log("✅ SDK Pi initialisé (testnet)");
+
+  return authRes;
 }
