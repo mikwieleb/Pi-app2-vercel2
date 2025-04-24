@@ -1,18 +1,32 @@
 import React from "react";
 
-function PiPaymentButton() {
+const PiPaymentButton = () => {
   const handlePayment = () => {
-    if (window.Pi) {
-      window.Pi.requestPayment(0.001, "Pi Paiement Testnet")
-        .then((payment) => {
-          console.log("Paiement effectué :", payment);
-        })
-        .catch((error) => {
-          console.error("Erreur de paiement :", error);
-        });
-    } else {
-      console.error("Pi SDK non initialisé pour le paiement");
+    if (!window.Pi) {
+      alert("Pi SDK non disponible !");
+      return;
     }
+
+    const paymentData = {
+      amount: 0.001,
+      memo: "Paiement Testnet",
+      metadata: { type: "vente_auto" }
+    };
+
+    window.Pi.createPayment(paymentData, {
+      onReadyForServerApproval: (paymentId) => {
+        console.log("À approuver côté serveur :", paymentId);
+      },
+      onReadyForServerCompletion: (paymentId, txid) => {
+        console.log("À compléter côté serveur :", paymentId, txid);
+      },
+      onCancel: (paymentId) => {
+        console.log("Paiement annulé :", paymentId);
+      },
+      onError: (error, payment) => {
+        console.error("Erreur de paiement :", error, payment);
+      },
+    });
   };
 
   return (
@@ -20,6 +34,6 @@ function PiPaymentButton() {
       Payer 0.001 Pi
     </button>
   );
-}
+};
 
 export default PiPaymentButton;
