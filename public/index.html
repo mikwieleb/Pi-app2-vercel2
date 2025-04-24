@@ -2,23 +2,20 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app"
-    />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    
-    <title>Vente Automobile Pi</title>
-
-    <!-- SDK Pi Network -->
+    <title>Pi Paiement</title>
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+    <script>
+      window.addEventListener('load', () => {
+        if (window.Pi) {
+          window.Pi.init({ version: "2.0", sandbox: true });
+          console.log("✅ Pi SDK initialisé");
+        } else {
+          console.error("❌ Pi SDK non chargé");
+        }
+      });
+    </script>
   </head>
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
   </body>
 </html>
