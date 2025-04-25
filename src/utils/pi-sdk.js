@@ -1,36 +1,23 @@
-export const initializePiSDK = () => {
+export const authenticateWithPi = async () => {
   if (!window.Pi) {
     console.error("Pi SDK non chargé.");
     throw new Error("Pi SDK not loaded");
   }
 
-  // Initialiser le SDK Pi dès que la page est chargée, avant toute interaction.
-  window.Pi.init({ version: "2.0", sandbox: true });  // Ajout de sandbox pour le testnet
-  console.log("Pi SDK initialisé");
-};
-
-export const authenticateWithPi = async () => {
-  // Vérifie si le SDK est bien initialisé avant de tenter une authentification
-  if (!window.Pi) {
-    console.error("Pi SDK non chargé.");
-    throw new Error("Pi SDK not loaded");
+  // Vérifie si Pi SDK est initialisé avant de tenter d'authentifier
+  if (!window.Pi.isInitialized()) {
+    window.Pi.init({ version: "2.0", sandbox: true });  // Assure-toi d'ajouter sandbox=true pour testnet
   }
 
   return new Promise((resolve, reject) => {
-    // Authentification de l'utilisateur Pi
     window.Pi.authenticate(
       onIncompletePaymentFound,
       (auth) => {
-        resolve(auth);  // Authentification réussie
+        resolve(auth);
       },
       (error) => {
-        reject(error);  // Authentification échouée
+        reject(error);
       }
     );
   });
-};
-
-// Callback pour gérer les paiements incomplets
-const onIncompletePaymentFound = (payment) => {
-  console.log("Paiement incomplet :", payment);
 };
