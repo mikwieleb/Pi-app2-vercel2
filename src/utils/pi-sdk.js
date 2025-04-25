@@ -1,3 +1,5 @@
+// src/pi-sdk.js
+
 let isPiInitialized = false;
 
 export const initializePiSDK = () => {
@@ -20,7 +22,7 @@ export const authenticateWithPi = async () => {
   }
 
   if (!isPiInitialized) {
-    initializePiSDK(); // Assure que init() est bien appelé
+    initializePiSDK(); // Assure que init() est appelé avant
   }
 
   return new Promise((resolve, reject) => {
