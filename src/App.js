@@ -1,3 +1,5 @@
+// src/App.js
+
 import React, { useEffect, useState } from "react";
 import { initializePiSDK, authenticateWithPi } from "./pi-sdk";
 
