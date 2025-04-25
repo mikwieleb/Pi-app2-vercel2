@@ -1,53 +1,43 @@
-import React from 'react';
+// src/PiPaymentButton.js
 
-export default function PiPaymentButton() {
+import React from "react";
+
+const PiPaymentButton = () => {
   const handlePayment = async () => {
     if (!window.Pi) {
-      alert("Pi SDK non chargé");
+      console.error("Pi SDK non chargé.");
       return;
-    }
-
-    if (!window.Pi.isInitialized()) {
-      window.Pi.init({ version: "2.0", sandbox: true });
     }
 
     const paymentData = {
       amount: 0.001,
-      memo: "Paiement Testnet",
-      metadata: { user: "Test" }
+      memo: "Paiement test Pi",
+      metadata: { type: "vente-voiture" },
     };
 
     try {
       const payment = await window.Pi.createPayment(paymentData, {
-        onReadyForServerApproval: async (paymentId) => {
-          console.log("Paiement prêt pour approbation serveur", paymentId);
+        onReadyForServerApproval: (paymentId) => {
+          console.log("Ready for server approval", paymentId);
         },
-        onReadyForServerCompletion: async (paymentId, txid) => {
-          const res = await fetch("/api/verify-payment", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ paymentId, txid })
-          });
-          const json = await res.json();
-          console.log("Vérification serveur :", json);
+        onReadyForServerCompletion: (paymentId, txid) => {
+          console.log("Ready for server completion", paymentId, txid);
         },
         onCancel: (paymentId) => {
           console.log("Paiement annulé", paymentId);
         },
         onError: (error, payment) => {
-          console.error("Erreur paiement", error);
-        }
+          console.error("Erreur de paiement", error);
+        },
       });
 
-      console.log("Paiement déclenché :", payment);
-    } catch (err) {
-      console.error("Erreur déclenchement paiement :", err);
+      console.log("Paiement lancé :", payment);
+    } catch (error) {
+      console.error("Erreur lors de createPayment :", error);
     }
   };
 
-  return (
-    <button onClick={handlePayment} style={{ padding: '10px 20px', marginTop: '15px', backgroundColor: '#a64ca6', color: 'white', border: 'none', borderRadius: '5px' }}>
-      Payer 0.001 Pi
-    </button>
-  );
-}
+  return <button onClick={handlePayment}>Payer 0.001 Pi</button>;
+};
+
+export default PiPaymentButton;
