@@ -1,29 +1,44 @@
+// src/App.js
 import React, { useEffect, useState } from "react";
-import { authenticateWithPi } from './utils/pi-sdk';
+import "./App.css";
 
 function App() {
-  const [authStatus, setAuthStatus] = useState(null);
+  const [piStatus, setPiStatus] = useState("Initialisation en cours...");
 
   useEffect(() => {
-    const authenticate = async () => {
+    const initPi = () => {
+      const Pi = window.Pi;
+      if (!Pi) {
+        console.error("❌ Pi SDK introuvable.");
+        setPiStatus("Erreur : SDK Pi introuvable");
+        return;
+      }
+
       try {
-        const auth = await authenticateWithPi();
-        setAuthStatus(auth.user.username);
+        Pi.init({ version: "2.0", sandbox: true });
+        console.log("✅ Pi SDK initialisé !");
+        setPiStatus("SDK Pi initialisé avec succès.");
       } catch (error) {
-        console.error("🚨 Erreur d’authentification :", error.message);
-        setAuthStatus("Erreur d'authentification");
+        console.error("❌ Erreur init Pi :", error);
+        setPiStatus("Erreur lors de l'initialisation du SDK.");
       }
     };
 
-    authenticate();
+    initPi();
   }, []);
 
   return (
     <div className="App">
       <h1>Vente Automobile Pi</h1>
-      <p>{authStatus ? `Bienvenue, ${authStatus}` : "Connexion en cours..."}</p>
-      <button>Ouvrir l'application</button>
-      <button>Payer 0.001 Pi</button>
+      <p>{piStatus}</p>
+
+      <button onClick={() => alert("Ouvrir l'application")}>
+        Ouvrir l'application
+      </button>
+
+      <button onClick={() => alert("Paiement Pi à venir")}>
+        Payer 0.001 Pi
+      </button>
     </div>
   );
 }
