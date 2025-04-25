@@ -46,7 +46,7 @@ export default function PiPaymentButton() {
   };
 
   return (
-    <button onClick={handlePayment} style={{ padding: '10px 20px', backgroundColor: '#a64ca6', color: 'white', border: 'none', borderRadius: '5px' }}>
+    <button onClick={handlePayment} style={{ padding: '10px 20px', marginTop: '15px', backgroundColor: '#a64ca6', color: 'white', border: 'none', borderRadius: '5px' }}>
       Payer 0.001 Pi
     </button>
   );
