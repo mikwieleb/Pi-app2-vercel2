@@ -1,4 +1,4 @@
-// src/pi-sdk.js
+// src/utils/pi-sdk.js
 
 let isPiInitialized = false;
 
