@@ -1,26 +1,39 @@
-import React, { useState, useEffect } from "react";
-import { initializePiSDK, authenticateWithPi } from "./utils/pi-sdk"; // Assure-toi que tu utilises le bon chemin
+// src/App.js
 
-const App = () => {
-  const [authStatus, setAuthStatus] = useState(false); // Statut de l'authentification
+import React, { useEffect, useState } from "react";
+import { initPiSdk } from "./utils/pi-sdk";
 
-  // Initialisation du SDK Pi au chargement du composant
+function App() {
+  const [user, setUser] = useState(null);
+  const [paymentStatus, setPaymentStatus] = useState("");
+
   useEffect(() => {
-    initializePiSDK();
+    initPiSdk();
   }, []);
 
-  // Fonction de connexion avec Pi
-  const handleAuthenticate = async () => {
+  const handleLogin = async () => {
+    if (!window.Pi) {
+      console.error("Pi SDK non chargé.");
+      return;
+    }
+
     try {
-      const auth = await authenticateWithPi();
-      setAuthStatus(true); // Mettre le statut de connexion à vrai
-      console.log("Authentification réussie", auth);
+      const scopes = ["payments"];
+      const authResult = await window.Pi.authenticate(
+        onIncompletePaymentFound,
+        scopes
+      );
+      console.log("Utilisateur connecté :", authResult);
+      setUser(authResult.user);
     } catch (error) {
-      console.error("Erreur d'authentification", error);
+      console.error("Erreur d'authentification :", error);
     }
   };
 
-  // Fonction de paiement de 0,001 Pi
+  const onIncompletePaymentFound = (payment) => {
+    console.log("Paiement incomplet détecté :", payment);
+  };
+
   const handlePayment = async () => {
     if (!window.Pi) {
       console.error("Pi SDK non chargé.");
@@ -28,32 +41,63 @@ const App = () => {
     }
 
     try {
-      // Tentative de paiement avec Pi SDK
-      const payment = await window.Pi.pay({
-        amount: 0.001, // Montant de paiement
-        currency: "PI", // Devise utilisée pour le paiement
+      const paymentData = {
+        amount: 0.001,
+        memo: "Paiement Testnet Vente Automobile",
+        metadata: { paymentType: "TestnetPurchase" },
+      };
+
+      const payment = await window.Pi.createPayment(paymentData, {
+        onReadyForServerApproval: (paymentId) => {
+          console.log("Ready for server approval:", paymentId);
+        },
+        onReadyForServerCompletion: (paymentId, txid) => {
+          console.log("Ready for server completion:", paymentId, txid);
+        },
+        onCancel: (paymentId) => {
+          console.log("Paiement annulé:", paymentId);
+          setPaymentStatus("Paiement annulé");
+        },
+        onError: (error, payment) => {
+          console.error("Erreur de paiement:", error, payment);
+          setPaymentStatus("Erreur de paiement");
+        },
       });
-      console.log("Paiement effectué", payment);
+
+      console.log("Paiement initié :", payment);
+      setPaymentStatus("Paiement initié !");
     } catch (error) {
-      console.error("Erreur de paiement", error);
+      console.error("Erreur pendant le paiement :", error);
     }
   };
 
   return (
-    <div className="App">
+    <div style={{ textAlign: "center", marginTop: "50px" }}>
       <h1>Vente Automobile Pi</h1>
-      {/* Affiche le bouton de connexion si non authentifié */}
-      {!authStatus ? (
-        <button onClick={handleAuthenticate}>Se connecter avec Pi</button>
+
+      {!user ? (
+        <button onClick={handleLogin} style={buttonStyle}>
+          Se connecter avec Pi
+        </button>
       ) : (
-        <div>
-          <h2>Authentifié avec succès !</h2>
-          {/* Affiche le bouton de paiement après l'authentification */}
-          <button onClick={handlePayment}>Payer 0,001 Pi</button>
-        </div>
+        <>
+          <p>Connecté en tant que {user.username}</p>
+          <button onClick={handlePayment} style={buttonStyle}>
+            Payer 0.001 Pi
+          </button>
+        </>
       )}
+
+      {paymentStatus && <p>{paymentStatus}</p>}
     </div>
   );
+}
+
+const buttonStyle = {
+  padding: "10px 20px",
+  fontSize: "16px",
+  margin: "10px",
+  cursor: "pointer",
 };
 
 export default App;
