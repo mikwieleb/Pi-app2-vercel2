@@ -1,5 +1,3 @@
-// src/App.js
-
 import React, { useEffect, useState } from "react";
 import { initializePiSDK, authenticateWithPi } from "./utils/pi-sdk";
 
@@ -8,7 +6,7 @@ function App() {
   const [status, setStatus] = useState("Chargement SDK...");
 
   useEffect(() => {
-    initializePiSDK();  // Initialise Pi SDK au démarrage
+    initializePiSDK(); // Initialise Pi SDK au démarrage
     setStatus("SDK Pi initialisé.");
   }, []);
 
