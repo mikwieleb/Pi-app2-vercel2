@@ -1,41 +1,33 @@
-let isPiInitialized = false;
-
 export const initializePiSDK = () => {
-  if (!window.Pi) {
-    console.error("Pi SDK non chargé.");
+  if (window.Pi) {
+    console.log("SDK Pi déjà initialisé.");
     return;
   }
-
-  if (!isPiInitialized) {
-    window.Pi.init({ version: "2.0", sandbox: true });
-    console.log("Pi SDK initialisé.");
-    isPiInitialized = true;
-  } else {
-    console.log("Pi SDK déjà initialisé.");
-  }
+  
+  // Chargement du SDK Pi
+  const script = document.createElement("script");
+  script.src = "https://cdn.minepi.com/pi-sdk.js"; // Assure-toi que le lien est correct
+  script.async = true;
+  script.onload = () => {
+    console.log("SDK Pi chargé avec succès.");
+  };
+  document.body.appendChild(script);
 };
 
 export const authenticateWithPi = async () => {
-  if (!window.Pi) {
-    console.error("Pi SDK non chargé.");
-    throw new Error("Pi SDK not loaded");
-  }
-
-  if (!isPiInitialized) {
-    initializePiSDK(); // Assure que init() est appelé avant
-  }
-
   return new Promise((resolve, reject) => {
-    console.log("Tentative d'authentification avec Pi...");
-    window.Pi.authenticate(
-      (auth) => {
-        console.log("Authentification réussie :", auth);
-        resolve(auth);
-      },
-      (error) => {
-        console.error("Erreur d'authentification Pi :", error);
+    if (!window.Pi) {
+      reject("Le SDK Pi n'est pas disponible.");
+      return;
+    }
+
+    // Tentative de connexion à Pi
+    window.Pi.authenticate()
+      .then((authResult) => {
+        resolve(authResult);
+      })
+      .catch((error) => {
         reject(error);
-      }
-    );
+      });
   });
 };
