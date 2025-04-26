@@ -1,5 +1,3 @@
-// src/utils/pi-sdk.js
-
 let isPiInitialized = false;
 
 export const initializePiSDK = () => {
@@ -12,6 +10,8 @@ export const initializePiSDK = () => {
     window.Pi.init({ version: "2.0", sandbox: true });
     console.log("Pi SDK initialisé.");
     isPiInitialized = true;
+  } else {
+    console.log("Pi SDK déjà initialisé.");
   }
 };
 
@@ -26,9 +26,10 @@ export const authenticateWithPi = async () => {
   }
 
   return new Promise((resolve, reject) => {
+    console.log("Tentative d'authentification avec Pi...");
     window.Pi.authenticate(
-      onIncompletePaymentFound,
       (auth) => {
+        console.log("Authentification réussie :", auth);
         resolve(auth);
       },
       (error) => {
@@ -37,8 +38,4 @@ export const authenticateWithPi = async () => {
       }
     );
   });
-};
-
-const onIncompletePaymentFound = (payment) => {
-  console.log("Paiement incomplet détecté :", payment);
 };
