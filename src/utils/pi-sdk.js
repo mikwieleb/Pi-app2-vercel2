@@ -1,3 +1,5 @@
+// src/utils/pi-sdk.js
+
 let isPiInitialized = false;
 
 export const initializePiSDK = () => {
@@ -37,9 +39,6 @@ export const authenticateWithPi = async () => {
   });
 };
 
-const isSandbox = process.env.PI_SANDBOX === 'true';  // Vérifie si l'environnement est en mode sandbox
-
-window.Pi.init({
-  version: "2.0",
-  sandbox: isSandbox // Active le sandbox si la variable est définie sur true
-});
+const onIncompletePaymentFound = (payment) => {
+  console.log("Paiement incomplet détecté :", payment);
+};
