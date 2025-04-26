@@ -1,5 +1,3 @@
-// src/utils/pi-sdk.js
-
 let isPiInitialized = false;
 
 export const initializePiSDK = () => {
