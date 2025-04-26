@@ -1,15 +1,16 @@
 // src/utils/pi-sdk.js
 
-export const initPiSdk = () => {
-  const isSandbox = process.env.REACT_APP_PI_SANDBOX === "true";
+export const initiatePayment = async (username) => {
+  try {
+    const paymentData = {
+      amount: 0.001,
+      memo: "Paiement Vente Automobile",
+      metadata: { username },
+    };
 
-  if (window.Pi) {
-    window.Pi.init({
-      version: "2.0",
-      sandbox: isSandbox,
-    });
-    console.log("SDK Pi initialisé");
-  } else {
-    console.error("Le SDK Pi n'est pas chargé !");
+    const payment = await window.Pi.createPayment(paymentData);
+    console.log('Payment created:', payment);
+  } catch (error) {
+    console.error('Payment initiation failed:', error);
   }
 };
