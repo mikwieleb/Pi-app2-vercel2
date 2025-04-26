@@ -1,16 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { initializePiSDK, authenticateWithPi } from "./utils/pi-sdk";
 import "./App.css";
 
 const App = () => {
   const [userAuthenticated, setUserAuthenticated] = useState(false);
-  const [paymentSuccess, setPaymentSuccess] = useState(false); // État pour suivre si le paiement est effectué
+  const [paymentSuccess, setPaymentSuccess] = useState(false); // Suivi de l'état de paiement
+
+  useEffect(() => {
+    // Initialisation du SDK Pi lorsque l'application est montée
+    console.log("Initialisation du SDK Pi...");
+    initializePiSDK();
+  }, []);
 
   // Fonction pour authentifier l'utilisateur
   const handleAuthentication = async () => {
     try {
+      console.log("Tentative d'authentification avec Pi...");
       await authenticateWithPi();
-      setUserAuthenticated(true); // Utilisateur authentifié
+      setUserAuthenticated(true); // Marque l'utilisateur comme authentifié
+      console.log("Utilisateur authentifié avec succès.");
     } catch (error) {
       console.error("Erreur d'authentification :", error);
     }
@@ -19,16 +27,16 @@ const App = () => {
   // Fonction pour effectuer le paiement de 0,001 Pi
   const handlePayment = async () => {
     try {
-      // Effectuer le paiement ici (c'est un exemple, adapte-le selon le SDK Pi)
+      console.log("Tentative de paiement de 0,001 Pi...");
       const payment = await window.Pi.pay({
         amount: 0.001, // 0.001 Pi
-        currency: "PI", // Monnaie Pi
+        currency: "PI",
       });
       if (payment.status === "success") {
-        setPaymentSuccess(true); // Marque le paiement comme réussi
-        console.log("Paiement effectué avec succès :", payment);
+        setPaymentSuccess(true); // Paiement réussi
+        console.log("Paiement réussi !");
       } else {
-        console.error("Erreur lors du paiement", payment);
+        console.error("Échec du paiement", payment);
       }
     } catch (error) {
       console.error("Erreur lors du paiement :", error);
@@ -43,11 +51,11 @@ const App = () => {
         <button onClick={handleAuthentication}>Se connecter avec Pi</button>
       ) : (
         // Si l'utilisateur est authentifié, afficher le bouton de paiement
-        <>
+        <div>
           <p>Utilisateur authentifié</p>
           <button onClick={handlePayment}>Payer 0,001 Pi</button>
-          {paymentSuccess && <p>Paiement réussi !</p>} {/* Message de succès du paiement */}
-        </>
+          {paymentSuccess && <p>Paiement effectué avec succès !</p>}
+        </div>
       )}
     </div>
   );
