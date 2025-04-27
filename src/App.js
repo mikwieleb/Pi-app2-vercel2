@@ -1,47 +1,26 @@
-// src/App.js
-
-import React, { useState } from 'react';
-import { initiatePayment } from './utils/pi-sdk';
-import './App.css';
+import React from "react";
 
 function App() {
-  const [user, setUser] = useState(null);
-
-  const login = async () => {
+  const handleLogin = async () => {
+    if (!window.Pi) {
+      alert("Pi SDK non chargé !");
+      return;
+    }
     try {
       const scopes = ['username', 'payments'];
       const authResult = await window.Pi.authenticate(scopes);
-      setUser(authResult.user);
-      console.log('User authenticated:', authResult.user);
+      console.log('Authentifié avec succès:', authResult);
+      alert('Bienvenue ' + authResult.user.username);
     } catch (error) {
-      console.error('Authentication failed:', error);
-    }
-  };
-
-  const handlePayment = async () => {
-    try {
-      await initiatePayment(user.username);
-    } catch (error) {
-      console.error('Payment failed:', error);
+      console.error('Erreur de connexion Pi:', error);
+      alert('Erreur : ' + error.message);
     }
   };
 
   return (
-    <div className="App" style={{ backgroundColor: '#f3ecff', minHeight: '100vh', padding: '2rem', textAlign: 'center' }}>
+    <div style={{ textAlign: "center", marginTop: "100px", backgroundColor: "#f5f0ff", height: "100vh" }}>
       <h1>Vente Automobile Pi</h1>
-      
-      {!user ? (
-        <button onClick={login} style={{ padding: '10px 20px', margin: '10px', borderRadius: '8px', backgroundColor: '#eee', border: '1px solid #ccc' }}>
-          Se connecter avec Pi
-        </button>
-      ) : (
-        <>
-          <p>Bienvenue, {user.username} !</p>
-          <button onClick={handlePayment} style={{ padding: '10px 20px', margin: '10px', borderRadius: '8px', backgroundColor: '#7b2cbf', color: '#fff', border: 'none' }}>
-            Payer 0.001 Pi
-          </button>
-        </>
-      )}
+      <button onClick={handleLogin}>Se connecter avec Pi</button>
     </div>
   );
 }
