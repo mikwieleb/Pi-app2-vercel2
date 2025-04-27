@@ -1,13 +1,13 @@
 // src/components/PiPaymentButton.js
 
 import React from 'react';
-import { payment } from '../utils/pi-sdk'; // Assure-toi que l'import est correct !
+import { payment } from '../utils/pi-sdk';
 
 const PiPaymentButton = () => {
   const handlePayment = async () => {
     try {
       console.log('Tentative de paiement 0.001 Pi...');
-      const result = await payment(0.001);
+      const result = await payment(0.001); // Lancer le paiement
       alert('Paiement réussi ! ID de transaction: ' + result.txid);
     } catch (error) {
       console.error('Erreur lors du paiement:', error);
