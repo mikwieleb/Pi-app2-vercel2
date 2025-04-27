@@ -6,9 +6,8 @@ import { payment } from '../utils/pi-sdk';
 const PiPaymentButton = () => {
   const handlePayment = async () => {
     try {
-      console.log('Tentative de paiement 0.001 Pi...');
-      const result = await payment(0.001); // Lancer le paiement
-      alert('Paiement réussi ! ID de transaction: ' + result.txid);
+      await payment(0.001);
+      alert('Paiement réussi !');
     } catch (error) {
       console.error('Erreur lors du paiement:', error);
       alert('Erreur lors du paiement.');
