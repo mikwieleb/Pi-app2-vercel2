@@ -12,23 +12,23 @@ export const initializePiSdk = () => {
   }
 };
 
-export const login = async () => {
-  if (!pi) {
-    throw new Error('Pi SDK non initialisé.');
-  }
-
-  const scopes = ['username', 'payments'];
-  return await pi.authenticate(scopes);
-};
-
 export const payment = async (amount) => {
   if (!pi) {
     throw new Error('Pi SDK non initialisé.');
   }
 
-  return await pi.createPayment({
-    amount: amount,
-    memo: 'Achat voiture',
-    metadata: { description: 'Paiement vente automobile' },
-  });
+  try {
+    // Créer un paiement via Pi Network
+    const result = await pi.createPayment({
+      amount: amount,
+      memo: 'Achat voiture',
+      metadata: { description: 'Paiement vente automobile' },
+    });
+    
+    console.log('Paiement effectué :', result);
+    return result;
+  } catch (error) {
+    console.error('Erreur lors de la création du paiement:', error);
+    throw new Error('Erreur lors du paiement.');
+  }
 };
