@@ -2,17 +2,38 @@
 
 .App {
   text-align: center;
-  padding: 20px;
+  min-height: 100vh;
+  background-color: #f5f0ff; /* fond légèrement mauve */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Arial', sans-serif;
 }
 
-button {
-  padding: 10px 20px;
-  background-color: #4caf50;
+.App-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h1 {
+  color: #6a0dad; /* violet/mauve */
+  margin-bottom: 30px;
+}
+
+.login-button, .payment-button {
+  background-color: #6a0dad;
   color: white;
   border: none;
+  padding: 15px 30px;
+  margin: 10px;
+  border-radius: 8px;
+  font-size: 18px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-button:hover {
-  background-color: #45a049;
+.login-button:hover, .payment-button:hover {
+  background-color: #8a2be2; /* un peu plus clair au survol */
 }
