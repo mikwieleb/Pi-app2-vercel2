@@ -1,69 +1,57 @@
 import React, { useState } from "react";
+import "./App.css";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);
 
+  // Fonction de connexion avec Pi
   const handleLogin = async () => {
     if (!window.Pi) {
-      alert("Pi SDK non chargé !");
+      alert("Pi SDK non chargé. Ouvre cette page dans Pi Browser.");
       return;
     }
+
     try {
-      const scopes = ['username', 'payments'];
+      const scopes = ["username", "payments"];
       const authResult = await window.Pi.authenticate(scopes);
-      console.log('Authentifié avec succès:', authResult);
-      alert('Bienvenue ' + authResult.user.username);
-      setIsAuthenticated(true); // Connexion réussie
+      setUser(authResult.user);
+      console.log("Utilisateur connecté :", authResult);
     } catch (error) {
-      console.error('Erreur de connexion Pi:', error);
-      alert('Erreur : ' + error.message);
+      console.error("Erreur de connexion :", error);
     }
   };
 
+  // Fonction de paiement
   const handlePayment = async () => {
     if (!window.Pi) {
-      alert("Pi SDK non chargé !");
+      alert("Pi SDK non chargé.");
       return;
     }
-    try {
-      const paymentData = {
-        amount: 0.001,  // Montant 0.001 Pi
-        memo: "Paiement test pour Vente Automobile",
-        metadata: { paymentId: "test_payment_001" }
-      };
 
-      const payment = await window.Pi.createPayment(paymentData, {
-        onReadyForServerApproval: (paymentId) => {
-          console.log("Paiement prêt pour validation :", paymentId);
-        },
-        onReadyForServerCompletion: (paymentId, txid) => {
-          console.log("Paiement prêt pour finalisation :", paymentId, txid);
-        },
-        onCancel: (paymentId) => {
-          console.log("Paiement annulé :", paymentId);
-        },
-        onError: (error, payment) => {
-          console.error("Erreur de paiement :", error);
-        }
+    try {
+      const paymentData = await window.Pi.createPayment({
+        amount: 0.001,
+        memo: "Paiement de test Vente Automobile",
+        metadata: { type: "vente" },
       });
 
-      console.log('Paiement lancé:', payment);
+      console.log("Paiement initié :", paymentData);
     } catch (error) {
-      console.error('Erreur lors du paiement:', error);
-      alert('Erreur paiement : ' + error.message);
+      console.error("Erreur de paiement :", error);
     }
   };
 
   return (
-    <div style={{ textAlign: "center", marginTop: "100px", backgroundColor: "#f5f0ff", height: "100vh" }}>
+    <div className="App">
       <h1>Vente Automobile Pi</h1>
-      {!isAuthenticated ? (
+
+      {!user ? (
         <button onClick={handleLogin}>Se connecter avec Pi</button>
       ) : (
-        <div>
-          <p>Connecté ! Vous pouvez payer :</p>
+        <>
+          <p>Bienvenue, {user.username} !</p>
           <button onClick={handlePayment}>Payer 0,001 Pi</button>
-        </div>
+        </>
       )}
     </div>
   );
