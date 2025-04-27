@@ -1,20 +1,22 @@
 // src/components/PiPaymentButton.js
 
 import React from 'react';
-import piSdk from '../pi-sdk';
+import { payment } from '../utils/pi-sdk'; // <-- Correct ici !
 
 const PiPaymentButton = () => {
   const handlePayment = async () => {
     try {
       console.log('Tentative de paiement 0.001 Pi...');
-      await piSdk.payment(0.001);
+      await payment(0.001);
+      alert('Paiement réussi !');
     } catch (error) {
       console.error('Erreur lors du paiement:', error);
+      alert('Erreur lors du paiement.');
     }
   };
 
   return (
-    <button onClick={handlePayment}>
+    <button onClick={handlePayment} className="payment-button">
       Payer 0.001 Pi
     </button>
   );
