@@ -1,22 +1,34 @@
-// src/pi-sdk.js
+// src/utils/pi-sdk.js
 
-// Simulation d'un SDK Pi simplifié
-class PiSdk {
-  constructor({ appId, apiKey }) {
-    this.appId = appId;
-    this.apiKey = apiKey;
+let pi;
+
+export const initializePiSdk = () => {
+  if (window && window.Pi) {
+    pi = window.Pi;
+    console.log('Pi SDK initialisé.');
+  } else {
+    console.error('Pi SDK non disponible.');
+    alert('Le SDK Pi n\'est pas disponible. Assurez-vous d\'utiliser le Pi Browser.');
+  }
+};
+
+export const login = async () => {
+  if (!pi) {
+    throw new Error('Pi SDK non initialisé.');
   }
 
-  async payment(amount) {
-    console.log(`Paiement simulé de ${amount} Pi avec l'appId ${this.appId}`);
-    // Ici tu pourrais intégrer la vraie logique de paiement avec Pi Network SDK
-    alert(`Paiement de ${amount} Pi effectué !`);
+  const scopes = ['username', 'payments'];
+  return await pi.authenticate(scopes);
+};
+
+export const payment = async (amount) => {
+  if (!pi) {
+    throw new Error('Pi SDK non initialisé.');
   }
-}
 
-const piSdk = new PiSdk({
-  appId: 'venteautomobile.pi', // Ton App ID
-  apiKey: 'tpk9grfy1kvj0vlwep4wbqtev5cumfaf4vrcoop5plkanviumkeee67w9g1nixuy', // Ta clé API Testnet
-});
-
-export default piSdk;
+  return await pi.createPayment({
+    amount: amount,
+    memo: 'Achat voiture',
+    metadata: { description: 'Paiement vente automobile' },
+  });
+};
