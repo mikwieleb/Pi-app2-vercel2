@@ -1,7 +1,7 @@
 // src/components/PiPaymentButton.js
 
 import React from 'react';
-import { payment } from '../utils/pi-sdk'; // <-- Correct ici !
+import { payment } from '../utils/pi-sdk'; // Assure-toi que l'import est correct !
 
 const PiPaymentButton = () => {
   const handlePayment = async () => {
