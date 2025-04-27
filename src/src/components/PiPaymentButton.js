@@ -7,8 +7,8 @@ const PiPaymentButton = () => {
   const handlePayment = async () => {
     try {
       console.log('Tentative de paiement 0.001 Pi...');
-      await payment(0.001);
-      alert('Paiement réussi !');
+      const result = await payment(0.001);
+      alert('Paiement réussi ! ID de transaction: ' + result.txid);
     } catch (error) {
       console.error('Erreur lors du paiement:', error);
       alert('Erreur lors du paiement.');
