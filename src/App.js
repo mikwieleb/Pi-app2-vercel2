@@ -1,3 +1,5 @@
+// src/App.js
+
 import React from 'react';
 import PiPaymentButton from './components/PiPaymentButton';
 import { initializePiSdk, login } from './utils/pi-sdk';
@@ -5,7 +7,7 @@ import './App.css';
 
 function App() {
   React.useEffect(() => {
-    initializePiSdk();
+    initializePiSdk();  // Assure-toi que le SDK Pi est initialisé dès le chargement
   }, []);
 
   const handleLogin = async () => {
