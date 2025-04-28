@@ -1,28 +1,41 @@
-import React, { useState, useEffect } from 'react';
-import { initializePiSdk } from './utils/pi-sdk';
+import React, { useEffect } from 'react';
 import PiPaymentButton from './components/PiPaymentButton';
-import './App.css';
 
 function App() {
-  const [sdkReady, setSdkReady] = useState(false);
-
   useEffect(() => {
-    initializePiSdk();
-    setSdkReady(true); // Une fois initialisé, sdkReady passe à true
+    const loadPiSDK = async () => {
+      if (!window.Pi) {
+        console.warn('Pi SDK not found.');
+      } else {
+        console.log('Pi SDK loaded successfully.');
+      }
+    };
+
+    loadPiSDK();
   }, []);
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Vente Automobile Pi</h1>
-        {sdkReady ? (
-          <PiPaymentButton />
-        ) : (
-          <p>Chargement du SDK Pi...</p>
-        )}
-      </header>
+    <div style={styles.container}>
+      <h1 style={styles.title}>Bienvenue sur Vente Automobile Pi</h1>
+      <PiPaymentButton />
     </div>
   );
 }
+
+const styles = {
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100vh',
+    backgroundColor: '#f0e6ff',
+  },
+  title: {
+    color: '#8a2be2',
+    fontSize: '32px',
+    marginBottom: '40px',
+  },
+};
 
 export default App;
