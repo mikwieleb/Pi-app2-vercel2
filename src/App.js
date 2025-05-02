@@ -1,41 +1,33 @@
-import React, { useEffect } from 'react';
-import PiPaymentButton from './components/PiPaymentButton';
+import React from 'react';
+import PiPaymentButton from './PiPaymentButton';
+import './App.css';
 
 function App() {
-  useEffect(() => {
-    const loadPiSDK = async () => {
-      if (!window.Pi) {
-        console.warn('Pi SDK not found.');
-      } else {
-        console.log('Pi SDK loaded successfully.');
-      }
-    };
-
-    loadPiSDK();
-  }, []);
-
   return (
-    <div style={styles.container}>
-      <h1 style={styles.title}>Bienvenue sur Vente Automobile Pi</h1>
-      <PiPaymentButton />
+    <div className="App">
+      <h1>Vente Automobile Pi</h1>
+      <img src="/logo.png" alt="Logo" style={{ width: 150 }} />
+
+      <div style={{ marginTop: 30 }}>
+        <PiPaymentButton />
+      </div>
+
+      <div style={{ marginTop: 20 }}>
+        <a
+          href="pi://venteautomobile.pi"
+          style={{
+            padding: '10px 20px',
+            backgroundColor: 'purple',
+            color: 'white',
+            textDecoration: 'none',
+            borderRadius: '5px',
+          }}
+        >
+          Ouvrir l'application
+        </a>
+      </div>
     </div>
   );
 }
-
-const styles = {
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '100vh',
-    backgroundColor: '#f0e6ff',
-  },
-  title: {
-    color: '#8a2be2',
-    fontSize: '32px',
-    marginBottom: '40px',
-  },
-};
 
 export default App;
