@@ -1,85 +1,62 @@
 import React from 'react';
+import './App.css';
 
 function PiPaymentButton() {
   const handlePayment = async () => {
     if (!window.Pi) {
-      alert('Pi SDK is not loaded.');
+      alert('Pi SDK non disponible. Ouvre dans le navigateur Pi.');
       return;
     }
 
-    const paymentData = {
-      amount: 0.001, // Le montant à payer
-      memo: "Paiement Vente Automobile", // Message visible dans l'historique de paiement
-      metadata: { from: "vente-automobile-pi" }, // Données additionnelles
+    const scopes = ['payments'];
+    const onIncompletePaymentFound = (payment) => {
+      console.log('Paiement incomplet trouvé :', payment);
     };
 
     try {
-      const payment = await window.Pi.createPayment(paymentData, {
-        onReadyForServerApproval: async (paymentId) => {
-          console.log('Payment ready for server approval:', paymentId);
-          // ici on pourrait notifier ton serveur si besoin
-        },
-        onReadyForServerCompletion: async (paymentId, txid) => {
-          console.log('Payment ready for server completion:', paymentId, txid);
-          
-          // Vérifie le paiement avec ton backend
-          try {
-            const response = await fetch('/api/verify-payment', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${window.Pi.accessToken}`
-              },
-              body: JSON.stringify({ paymentId }),
-            });
+      const user = await window.Pi.authenticate(scopes, onIncompletePaymentFound);
+      console.log('Utilisateur connecté :', user);
 
-            const data = await response.json();
-            if (data.success) {
-              alert('Paiement confirmé ! Merci.');
-            } else {
-              alert('Erreur de vérification du paiement.');
-            }
-          } catch (error) {
-            console.error('Erreur lors de la vérification du paiement:', error);
-            alert('Erreur réseau.');
-          }
+      const paymentData = {
+        amount: 0.001,
+        memo: 'Paiement test Pi',
+        metadata: { user: user.username },
+      };
+
+      await window.Pi.createPayment(paymentData, {
+        onReadyForServerApproval: async (paymentId) => {
+          console.log('Prêt pour validation côté serveur', paymentId);
+          await fetch('/api/verify-payment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ paymentId }),
+          });
+        },
+        onReadyForServerCompletion: async (paymentId) => {
+          console.log('Prêt pour complétion côté serveur', paymentId);
+          await fetch('/api/verify-payment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ paymentId, complete: true }),
+          });
         },
         onCancel: (paymentId) => {
-          console.log('Payment cancelled:', paymentId);
-          alert('Paiement annulé.');
+          console.log('Paiement annulé :', paymentId);
         },
         onError: (error, payment) => {
-          console.error('Payment error:', error);
-          alert('Erreur pendant le paiement.');
+          console.error('Erreur de paiement :', error);
         },
       });
-
-      console.log('createPayment success:', payment);
     } catch (error) {
-      console.error('createPayment error:', error);
-      alert('Erreur lors de la création du paiement.');
+      console.error('Erreur d\'authentification :', error);
     }
   };
 
   return (
-    <div>
-      <button onClick={handlePayment} style={styles.button}>
-        Payer 0.001 Pi
-      </button>
-    </div>
+    <button onClick={handlePayment} style={{ padding: '10px 20px', backgroundColor: 'purple', color: 'white', border: 'none', borderRadius: '5px' }}>
+      Payer 0.001 Pi
+    </button>
   );
 }
-
-const styles = {
-  button: {
-    backgroundColor: '#8a2be2',
-    color: 'white',
-    border: 'none',
-    padding: '12px 24px',
-    borderRadius: '8px',
-    fontSize: '18px',
-    cursor: 'pointer',
-  }
-};
 
 export default PiPaymentButton;
