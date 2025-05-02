@@ -1,33 +1,41 @@
-const axios = require('axios');
-require('dotenv').config();
+// api/verify-payment.js
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Méthode non autorisée" });
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Méthode non autorisée' });
   }
 
-  const { paymentId } = req.body;
+  const { paymentId, complete } = req.body;
 
-  if (!paymentId) {
-    return res.status(400).json({ error: 'Missing paymentId' });
-  }
+  const API_KEY = process.env.PI_API_SECRET;
+  const headers = {
+    Authorization: `Key ${API_KEY}`,
+    'Content-Type': 'application/json',
+  };
+
+  const baseUrl = 'https://api.minepi.com/v2/payments';
 
   try {
-    const response = await axios.get(`https://api.minepi.com/v2/payments/${paymentId}`, {
-      headers: {
-        Authorization: `Key ${process.env.PI_API_KEY}`,
-      },
+    if (!paymentId) {
+      return res.status(400).json({ error: 'paymentId manquant' });
+    }
+
+    const endpoint = complete ? `${paymentId}/complete` : `${paymentId}/approve`;
+    const response = await fetch(`${baseUrl}/${endpoint}`, {
+      method: 'POST',
+      headers,
     });
 
-    const payment = response.data;
+    const data = await response.json();
 
-    if (payment.transaction && payment.transaction.txid) {
-      return res.status(200).json({ success: true });
-    } else {
-      return res.status(400).json({ success: false, error: 'Payment not completed.' });
+    if (!response.ok) {
+      console.error('Erreur API Pi :', data);
+      return res.status(500).json({ error: 'Erreur de validation Pi', details: data });
     }
+
+    return res.status(200).json({ success: true, data });
   } catch (error) {
-    console.error('Error verifying payment:', error.response?.data || error.message);
-    return res.status(500).json({ success: false, error: 'Server error verifying payment.' });
+    console.error('Erreur serveur :', error);
+    return res.status(500).json({ error: 'Erreur serveur', details: error.message });
   }
 }
