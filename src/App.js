@@ -1,3 +1,4 @@
+import './utils/pi-sdk';
 import React from 'react';
 import PiPaymentButton from './PiPaymentButton';
 import './App.css';
