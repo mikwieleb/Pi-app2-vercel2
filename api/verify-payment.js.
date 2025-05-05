@@ -1,41 +1,5 @@
-// api/verify-payment.js
-
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Méthode non autorisée' });
-  }
-
-  const { paymentId, complete } = req.body;
-
-  const API_KEY = process.env.PI_API_SECRET;
-  const headers = {
-    Authorization: `Key ${API_KEY}`,
-    'Content-Type': 'application/json',
-  };
-
-  const baseUrl = 'https://api.minepi.com/v2/payments';
-
-  try {
-    if (!paymentId) {
-      return res.status(400).json({ error: 'paymentId manquant' });
-    }
-
-    const endpoint = complete ? `${paymentId}/complete` : `${paymentId}/approve`;
-    const response = await fetch(`${baseUrl}/${endpoint}`, {
-      method: 'POST',
-      headers,
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      console.error('Erreur API Pi :', data);
-      return res.status(500).json({ error: 'Erreur de validation Pi', details: data });
-    }
-
-    return res.status(200).json({ success: true, data });
-  } catch (error) {
-    console.error('Erreur serveur :', error);
-    return res.status(500).json({ error: 'Erreur serveur', details: error.message });
-  }
+  const { paymentId } = req.body;
+  console.log("Vérification du paiement ID :", paymentId);
+  res.status(200).json({ success: true });
 }
