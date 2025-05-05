@@ -1,32 +1,17 @@
-import './utils/pi-sdk';
 import React from 'react';
 import PiPaymentButton from './PiPaymentButton';
-import './App.css';
 
 function App() {
   return (
-    <div className="App">
-      <h1>Vente Automobile Pi</h1>
+    <div style={{ textAlign: 'center', marginTop: 50 }}>
+      <h1 style={{ color: '#6A0DAD' }}>Vente Automobile en Pi</h1>
       <img src="/logo.png" alt="Logo" style={{ width: 150 }} />
-
-      <div style={{ marginTop: 30 }}>
-        <PiPaymentButton />
-      </div>
-
-      <div style={{ marginTop: 20 }}>
-        <a
-          href="pi://venteautomobile.pi"
-          style={{
-            padding: '10px 20px',
-            backgroundColor: 'purple',
-            color: 'white',
-            textDecoration: 'none',
-            borderRadius: '5px',
-          }}
-        >
-          Ouvrir l'application
-        </a>
-      </div>
+      <br /><br />
+      <a href="https://vente-automobile-pi-g6hd.vercel.app" target="_blank" rel="noopener noreferrer">
+        <button>Ouvrir l'application</button>
+      </a>
+      <br /><br />
+      <PiPaymentButton />
     </div>
   );
 }
