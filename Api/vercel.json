@@ -1,8 +1,0 @@
-{
-  "routes": [
-    {
-      "src": "/api/verify-payment",
-      "dest": "/api/verify-payment.js"
-    }
-  ]
-}
