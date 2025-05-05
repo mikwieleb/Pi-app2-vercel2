@@ -1,4 +1,4 @@
-import React from 'react';
+import './App.css';import React from 'react';
 import PiPaymentButton from './PiPaymentButton';
 
 function App() {
