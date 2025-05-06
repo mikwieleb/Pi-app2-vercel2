@@ -1,24 +1,41 @@
-body {
-  background-color: #f5f0ff;
+.App {
+  text-align: center;
+  background-color: #f2e6ff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   font-family: 'Arial', sans-serif;
-  margin: 0;
-  padding: 0;
 }
 
-h1 {
-  color: #6A0DAD;
+.App-header {
+  background-color: #b57edc;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  color: white;
+  width: 90%;
+  max-width: 500px;
+}
+
+.App-logo {
+  height: 80px;
+  margin-bottom: 20px;
 }
 
 button {
-  background-color: #6A0DAD;
-  color: white;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 6px;
+  background-color: white;
+  color: #b57edc;
+  border: 2px solid #b57edc;
+  padding: 10px 20px;
   font-size: 16px;
+  border-radius: 8px;
+  margin: 10px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 button:hover {
-  background-color: #580b9e;
+  background-color: #e8d3f9;
 }
