@@ -9,7 +9,7 @@ const App = () => {
       script.src = "https://sdk.minepi.com/pi-sdk.js";
       script.async = true;
       script.onload = () => {
-        console.log("Pi SDK loaded");
+        console.log("Pi SDK chargé");
       };
       document.body.appendChild(script);
     };
@@ -19,7 +19,7 @@ const App = () => {
 
   return (
     <div className="App">
-      <img src="/logo.png" alt="Logo" className="logo" />
+      <img src="/pi-logo.png" alt="Logo Pi" className="logo" />
       <h1>Bienvenue sur Vente Automobile Pi</h1>
       <PiPaymentButton />
       <a className="open-btn" href="pi://venteautomobile.pi" rel="noreferrer">
