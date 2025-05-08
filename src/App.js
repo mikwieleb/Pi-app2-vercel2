@@ -1,20 +1,32 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PiPaymentButton from "./PiPaymentButton";
 import "./App.css";
 
-function App() {
+const App = () => {
+  useEffect(() => {
+    const loadPiSdk = () => {
+      const script = document.createElement("script");
+      script.src = "https://sdk.minepi.com/pi-sdk.js";
+      script.async = true;
+      script.onload = () => {
+        console.log("Pi SDK loaded");
+      };
+      document.body.appendChild(script);
+    };
+
+    loadPiSdk();
+  }, []);
+
   return (
     <div className="App">
-      <h1>Bienvenue sur l'App Pi Network</h1>
-      <img src="/logo.png" alt="Logo" style={{ width: "150px" }} />
-      <br />
+      <img src="/logo.png" alt="Logo" className="logo" />
+      <h1>Bienvenue sur Vente Automobile Pi</h1>
       <PiPaymentButton />
-      <br />
-      <button onClick={() => window.open("https://app-pi-browser.pi", "_blank")}>
+      <a className="open-btn" href="pi://venteautomobile.pi" rel="noreferrer">
         Ouvrir l'application
-      </button>
+      </a>
     </div>
   );
-}
+};
 
 export default App;
