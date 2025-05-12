@@ -26,4 +26,4 @@ Cette application permet de :
 
 ## Aide
 
-Pour toute erreur de type `Pi SDK was not initialized`, assurez-vous que `window.Pi.init()` est bien appelé dans `pi-sdk.js`.
+Pour toute erreur de type `Pi SDK was not initialized`, assurez-vous que `window.Pi.init()` est bien appelé dans `pi-sdk.js`. 
