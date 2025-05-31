@@ -9,7 +9,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "paymentId requis" });
   }
 
-  // Ici tu pourras ajouter une vérification réelle via l'API Pi Network si besoin
+  // Logique fictive de vérification pour test
   console.log("Vérification du paiement :", paymentId);
 
   return res.status(200).json({ verified: true });
